@@ -4,6 +4,9 @@ import com.example.aichat.domain.ActivityType
 import com.example.aichat.domain.UserEntity
 import com.example.aichat.domain.UserRole
 import com.example.aichat.repository.ActivityLogRepository
+import com.example.aichat.repository.ChatRepository
+import com.example.aichat.repository.FeedbackRepository
+import com.example.aichat.repository.ThreadRepository
 import com.example.aichat.repository.UserRepository
 import com.example.aichat.security.JwtService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,12 +31,18 @@ class AuthControllerIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val objectMapper: ObjectMapper,
     @Autowired private val userRepository: UserRepository,
+    @Autowired private val threadRepository: ThreadRepository,
+    @Autowired private val chatRepository: ChatRepository,
+    @Autowired private val feedbackRepository: FeedbackRepository,
     @Autowired private val activityLogRepository: ActivityLogRepository,
     @Autowired private val passwordEncoder: PasswordEncoder,
     @Autowired private val jwtService: JwtService,
 ) {
     @BeforeEach
     fun clearData() {
+        feedbackRepository.deleteAll()
+        chatRepository.deleteAll()
+        threadRepository.deleteAll()
         activityLogRepository.deleteAll()
         userRepository.deleteAll()
     }
