@@ -69,6 +69,24 @@
 - Verification:
   - `.\gradlew.bat test` passed.
 
+## 2026-02-28 - feature/admin-api (csv encoding)
+
+- Scope:
+  - Patched admin CSV download for better Excel compatibility on Windows.
+  - Added UTF-8 BOM and explicit `charset=UTF-8` content type in CSV response.
+  - Extended integration test to verify BOM bytes and charset header.
+
+- Issues found:
+  - Korean text in CSV could appear garbled when opened directly in Excel due to encoding detection.
+
+- Resolutions:
+  - Prepended UTF-8 BOM (`EF BB BF`) to CSV bytes at download response.
+  - Returned `Content-Type: text/csv; charset=UTF-8`.
+
+- Verification:
+  - `.\gradlew.bat test --tests com.example.aichat.admin.AdminControllerIntegrationTest` passed.
+  - `.\gradlew.bat test` passed.
+
 ## 2026-02-28 - feature/admin-api (admin bootstrap)
 
 - Scope:
