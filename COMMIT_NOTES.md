@@ -40,3 +40,31 @@
 - Verification:
   - `.\gradlew.bat test --tests com.example.aichat.admin.AdminControllerIntegrationTest` passed.
   - `.\gradlew.bat test` passed.
+
+## 2026-02-28 - feature/admin-api (finalization)
+
+- Scope:
+  - Standardized global error response shape to include:
+    - `timestamp`, `status`, `code`, `message`, `path`
+  - Added explicit exception mappings for:
+    - `400` validation
+    - `404` not found
+    - `403` forbidden
+    - `409` conflict
+    - `502` AI provider failure
+  - Added smoke integration test for full flow:
+    - signup -> login -> token -> chat create
+  - Added README demo curl scenario:
+    - signup -> login -> chats -> threads -> feedback -> admin metrics/csv
+
+- Issues found:
+  - Existing error payload did not include request path, making API error tracing weaker.
+  - Existing tests had no single end-to-end happy-path smoke flow in one test.
+
+- Resolutions:
+  - Refactored `GlobalExceptionHandler` with common builder and path-aware responses.
+  - Added `SignupLoginChatSmokeTest` with `@ActiveProfiles("test")` to guarantee `MockAiProvider` usage.
+  - Documented full curl runbook using `TOKEN`/`ADMIN_TOKEN` environment variables.
+
+- Verification:
+  - `.\gradlew.bat test` passed.
