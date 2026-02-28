@@ -6,4 +6,5 @@ import java.util.UUID
 
 interface ChatRepository : JpaRepository<ChatEntity, UUID> {
     fun findAllByThreadIdInOrderByCreatedAtAsc(threadIds: Collection<UUID>): List<ChatEntity>
+    fun deleteAllByThreadIdIn(threadIds: Collection<UUID>): Long
 }
