@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/aichat}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:aichat}
+    password: ${DB_PASSWORD:aichat}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: false
+    show-sql: false
+
+app:
+  ai:
+    provider: openai
+  openai:
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
