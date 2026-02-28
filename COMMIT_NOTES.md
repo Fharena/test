@@ -18,3 +18,25 @@
 
 - Verification:
   - `.\gradlew.bat test` passed successfully.
+
+## 2026-02-28 - feature/admin-api
+
+- Scope:
+  - Implemented admin API endpoints:
+    - `GET /api/admin/metrics/daily`
+    - `GET /api/admin/reports/daily-chats.csv`
+  - Added 24-hour activity aggregation for `SIGNUP`, `LOGIN`, `CHAT_CREATE`
+  - Added CSV report generation including user/thread/chat data for recent chats
+  - Added admin integration tests for authz, metrics counts, and CSV output/escaping
+
+- Issues found:
+  - CSV generation can break when `question/answer` contains comma, quote, or line breaks.
+  - Report query could trigger lazy loading overhead if thread/user are loaded row by row.
+
+- Resolutions:
+  - Implemented explicit CSV escaping (`""` quote escaping + field wrapping on comma/quote/newline).
+  - Added repository query with `join fetch` for `chat -> thread -> user` in a single read path.
+
+- Verification:
+  - `.\gradlew.bat test --tests com.example.aichat.admin.AdminControllerIntegrationTest` passed.
+  - `.\gradlew.bat test` passed.
