@@ -20,5 +20,10 @@ app:
       issuer: aichat-api
       secret: ${JWT_SECRET:change-me-in-prod}
       access-token-exp-minutes: ${JWT_ACCESS_TOKEN_EXP_MINUTES:60}
+  bootstrap-admin:
+    enabled: false
+    email:
+    password:
+    name: Admin
   ai:
     provider: mock

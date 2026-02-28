@@ -19,6 +19,11 @@ spring:
           time_zone: UTC
 
 app:
+  bootstrap-admin:
+    enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
+    email: ${BOOTSTRAP_ADMIN_EMAIL:admin@example.com}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:Admin123!}
+    name: ${BOOTSTRAP_ADMIN_NAME:Demo Admin}
   ai:
     provider: mock
   openai:
