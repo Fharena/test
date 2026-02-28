@@ -16,13 +16,13 @@ Spring Boot 3 + Kotlin 1.9 기반 AI 챗봇 API 서버 과제용 프로젝트입
 ## Run (dev)
 
 ```bash
-gradle bootRun --args='--spring.profiles.active=dev'
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
 Windows PowerShell:
 
 ```powershell
-gradle bootRun --args="--spring.profiles.active=dev"
+.\gradlew.bat bootRun --args="--spring.profiles.active=dev"
 ```
 
 기본값이 `dev`이므로 프로필 인자 없이도 실행 가능합니다.
@@ -58,11 +58,10 @@ $env:OPENAI_API_KEY="your-key"
 3. prod 프로필로 실행
 
 ```bash
-gradle bootRun --args='--spring.profiles.active=prod'
+./gradlew bootRun --args='--spring.profiles.active=prod'
 ```
 
 ## Notes
 
 - `prod`에서는 `spring.jpa.hibernate.ddl-auto=validate`로 설정되어 있습니다.
 - OpenAI 연동은 `AiProvider` 구현 작업 시 `prod` 프로필에서만 활성화되도록 구성하는 것을 권장합니다.
-- 필요 시 `gradle wrapper`를 실행해 `gradlew`/`gradlew.bat`를 생성해 사용할 수 있습니다.
