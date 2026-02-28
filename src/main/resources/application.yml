@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: aichat-api
+  profiles:
+    active: dev
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    open-in-view: false
+
+server:
+  error:
+    include-message: always
+
+app:
+  security:
+    jwt:
+      issuer: aichat-api
+      secret: ${JWT_SECRET:change-me-in-prod}
+      access-token-exp-minutes: ${JWT_ACCESS_TOKEN_EXP_MINUTES:60}
+  ai:
+    provider: mock
