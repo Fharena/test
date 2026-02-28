@@ -10,4 +10,5 @@ interface FeedbackRepository : JpaRepository<FeedbackEntity, UUID> {
     fun existsByUserIdAndChatId(userId: UUID, chatId: UUID): Boolean
     fun findAllByUserId(userId: UUID, pageable: Pageable): Page<FeedbackEntity>
     fun findAllByChatId(chatId: UUID, pageable: Pageable): Page<FeedbackEntity>
+    fun deleteAllByChatIdIn(chatIds: Collection<UUID>): Long
 }
