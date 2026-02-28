@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.nio.charset.StandardCharsets
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.UUID
@@ -140,11 +141,18 @@ class AdminControllerIntegrationTest(
         )
             .andExpect(status().isOk)
             .andExpect(content().contentTypeCompatibleWith(MediaType("text", "csv")))
+            .andExpect(header().string("Content-Type", org.hamcrest.Matchers.containsString("charset=UTF-8")))
             .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString("attachment; filename=\"daily-chats-")))
             .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString(".csv\"")))
             .andReturn()
 
-        val csv = result.response.contentAsString
+        val csvBytes = result.response.contentAsByteArray
+        assertThat(csvBytes.size).isGreaterThanOrEqualTo(3)
+        assertThat(csvBytes[0]).isEqualTo(0xEF.toByte())
+        assertThat(csvBytes[1]).isEqualTo(0xBB.toByte())
+        assertThat(csvBytes[2]).isEqualTo(0xBF.toByte())
+
+        val csv = String(csvBytes, StandardCharsets.UTF_8).removePrefix("\uFEFF")
         assertThat(csv).contains("createdAt,userId,email,name,role,threadId,chatId,question,answer")
         assertThat(csv).contains(owner.email)
         assertThat(csv).contains(owner.name)

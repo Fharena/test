@@ -26,11 +26,15 @@ class AdminController(
     )
     fun downloadDailyChatsCsv(): ResponseEntity<ByteArray> {
         val report = adminService.generateDailyChatsCsv()
-        val body = report.content.toByteArray(StandardCharsets.UTF_8)
+        val body = UTF8_BOM + report.content.toByteArray(StandardCharsets.UTF_8)
 
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${report.fileName}\"")
-            .contentType(MediaType.parseMediaType("text/csv"))
+            .contentType(MediaType("text", "csv", StandardCharsets.UTF_8))
             .body(body)
+    }
+
+    companion object {
+        private val UTF8_BOM = byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte())
     }
 }
