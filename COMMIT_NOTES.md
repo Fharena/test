@@ -68,3 +68,23 @@
 
 - Verification:
   - `.\gradlew.bat test` passed.
+
+## 2026-02-28 - feature/admin-api (admin bootstrap)
+
+- Scope:
+  - Added startup admin bootstrap initializer for demo/admin API access.
+  - Kept signup behavior unchanged (`MEMBER` default), but allowed a seeded `ADMIN` account.
+  - Added profile-based config:
+    - `dev`: bootstrap enabled with default demo admin credentials
+    - `prod`: bootstrap optional via environment variables (disabled by default)
+  - Updated README admin scenario to obtain `ADMIN_TOKEN` by real login.
+
+- Issues found:
+  - Admin API demo required manual DB edits or pre-seeded admin user due no creation path.
+
+- Resolutions:
+  - Implemented idempotent bootstrap seed logic on startup (`enabled + credentials` gated).
+  - Added collision guard (existing non-admin with same email logs warning and skips).
+
+- Verification:
+  - `.\gradlew.bat test` passed.

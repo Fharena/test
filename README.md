@@ -27,6 +27,22 @@ Windows PowerShell:
 
 기본값이 `dev`이므로 프로필 인자 없이도 실행 가능합니다.
 
+### Dev 기본 관리자 계정(자동 생성)
+
+`dev` 실행 시 아래 계정이 자동으로 1회 생성됩니다(이미 있으면 재생성하지 않음).
+
+- email: `admin@example.com`
+- password: `Admin123!`
+
+필요하면 환경변수로 변경할 수 있습니다.
+
+```bash
+export BOOTSTRAP_ADMIN_ENABLED=true
+export BOOTSTRAP_ADMIN_EMAIL=admin@example.com
+export BOOTSTRAP_ADMIN_PASSWORD=Admin123!
+export BOOTSTRAP_ADMIN_NAME="Demo Admin"
+```
+
 ## Run (prod)
 
 1. PostgreSQL 실행
@@ -147,10 +163,12 @@ curl -s "$BASE_URL/api/feedbacks?page=0&size=10&sort=createdAt,desc" \
 
 ### 6) Admin metrics / CSV
 
-`/api/admin/**`는 ADMIN 토큰이 필요합니다. (사전 생성된 admin 계정 로그인 토큰 사용)
+`/api/admin/**`는 ADMIN 토큰이 필요합니다. (`dev`에서는 bootstrap admin으로 로그인)
 
 ```bash
-export ADMIN_TOKEN=<admin-jwt>
+export ADMIN_TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"Admin123!"}' | jq -r '.accessToken')
 ```
 
 ```bash
