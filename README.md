@@ -61,6 +61,109 @@ $env:OPENAI_API_KEY="your-key"
 ./gradlew bootRun --args='--spring.profiles.active=prod'
 ```
 
+## 시연용 curl 시나리오
+
+아래 예시는 `dev` 또는 `test` 프로필(= `MockAiProvider`) 기준입니다. OpenAI API 키 없이 동작합니다.
+
+### 0) 공통 변수
+
+```bash
+export BASE_URL=http://localhost:8080
+```
+
+Windows PowerShell:
+
+```powershell
+$env:BASE_URL="http://localhost:8080"
+```
+
+### 1) Signup
+
+```bash
+curl -i -X POST "$BASE_URL/api/auth/signup" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email":"member1@example.com",
+    "password":"Password123!",
+    "name":"Member One"
+  }'
+```
+
+### 2) Login + TOKEN 저장
+
+```bash
+export TOKEN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"member1@example.com","password":"Password123!"}' | jq -r '.accessToken')
+echo "$TOKEN"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:TOKEN = (curl -s -X POST "$env:BASE_URL/api/auth/login" `
+  -H "Content-Type: application/json" `
+  -d '{"email":"member1@example.com","password":"Password123!"}' | ConvertFrom-Json).accessToken
+$env:TOKEN
+```
+
+### 3) Chat 생성
+
+```bash
+CHAT_RESPONSE=$(curl -s -X POST "$BASE_URL/api/chats" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"question":"안녕, MVP 테스트야","isStreaming":false}')
+echo "$CHAT_RESPONSE"
+```
+
+`chatId` 추출:
+
+```bash
+export CHAT_ID=$(echo "$CHAT_RESPONSE" | jq -r '.chatId')
+echo "$CHAT_ID"
+```
+
+### 4) Threads 조회
+
+```bash
+curl -s "$BASE_URL/api/threads?page=0&size=10&sort=createdAt,desc" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### 5) Feedback 생성/조회
+
+```bash
+curl -i -X POST "$BASE_URL/api/feedbacks" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"chatId\":\"$CHAT_ID\",\"isPositive\":true}"
+```
+
+```bash
+curl -s "$BASE_URL/api/feedbacks?page=0&size=10&sort=createdAt,desc" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### 6) Admin metrics / CSV
+
+`/api/admin/**`는 ADMIN 토큰이 필요합니다. (사전 생성된 admin 계정 로그인 토큰 사용)
+
+```bash
+export ADMIN_TOKEN=<admin-jwt>
+```
+
+```bash
+curl -s "$BASE_URL/api/admin/metrics/daily" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+```bash
+curl -L "$BASE_URL/api/admin/reports/daily-chats.csv" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -o daily-chats.csv
+```
+
 ## Notes
 
 - `prod`에서는 `spring.jpa.hibernate.ddl-auto=validate`로 설정되어 있습니다.

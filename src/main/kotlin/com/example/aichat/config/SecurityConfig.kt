@@ -41,7 +41,11 @@ class SecurityConfig(
                     "/api/auth/login",
                 ).permitAll()
                 it.requestMatchers("/api/admin/**").hasRole(UserRole.ADMIN.name)
-                it.requestMatchers(HttpMethod.PATCH, "/api/feedback/*/status").hasRole(UserRole.ADMIN.name)
+                it.requestMatchers(
+                    HttpMethod.PATCH,
+                    "/api/feedbacks/*/status",
+                    "/api/feedback/*/status",
+                ).hasRole(UserRole.ADMIN.name)
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
